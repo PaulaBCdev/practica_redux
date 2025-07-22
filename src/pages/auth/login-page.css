@@ -1,0 +1,45 @@
+.login-page {
+  background-color: #f9f9f9;
+
+  .login-form {
+    display: grid;
+    grid-template-columns: repeat(1, 400px);
+    justify-content: center;
+    gap: 1rem;
+    padding: 2em 0;
+
+    .form-field {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin: 0.5rem 2rem 0 2rem;
+
+      .login-label {
+        padding-top: 5px;
+        font-weight: bold;
+        color: #2c2c2c;
+      }
+
+      .login-input {
+        width: 65%;
+        border: solid #2c2c2c;
+        border-radius: 20px;
+        border-width: 2px;
+        background-color: rgba(217, 217, 217, 0.3);
+        padding: 0 10px;
+        resize: vertical;
+      }
+    }
+
+    .login-btn {
+      justify-self: center;
+      margin: 1.5em 0;
+    }
+
+    .remember-me-check {
+      display: flex;
+      margin: 0 2em;
+      gap: 10px;
+    }
+  }
+}

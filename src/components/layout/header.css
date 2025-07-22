@@ -1,0 +1,41 @@
+.header {
+  position: sticky;
+  top: 0;
+  background-color: var(--secondary-color);
+  z-index: 999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 4rem;
+
+  .logo {
+    width: 40%;
+    height: auto;
+    cursor: pointer;
+  }
+
+  .nav {
+    .nav-btns {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: end;
+      gap: 4px;
+
+      .nav-btn {
+        color: var(--text-color);
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .nav-btn.logout {
+        border: none;
+        background: none;
+        padding: 0;
+      }
+    }
+  }
+}

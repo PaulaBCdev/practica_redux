@@ -1,0 +1,12 @@
+.error-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  padding: 1em;
+  gap: 1em;
+
+  .error-p {
+    font-size: 20px;
+  }
+}

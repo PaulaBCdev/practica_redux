@@ -1,0 +1,187 @@
+.adverts-main-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .ads-page {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .ads-page-empty {
+    text-align: center;
+  }
+
+  .ads-filter {
+    display: flex;
+    flex-direction: column;
+    border: solid #2c2c2c;
+    border-radius: 20px;
+    border-width: 2px;
+    padding: 20px;
+    gap: 20px;
+
+    .filters-title {
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .filters-div {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .filters-label {
+        font-weight: bold;
+      }
+
+      .form-field {
+        display: flex;
+        flex-direction: row;
+        gap: 30px;
+
+        .name-filter-label {
+          padding-top: 5px;
+          font-weight: bold;
+          color: #2c2c2c;
+        }
+
+        .name-filter-input {
+          width: 65%;
+          border: solid #2c2c2c;
+          border-radius: 20px;
+          border-width: 1px;
+          background-color: rgba(217, 217, 217, 0.3);
+          padding: 0 10px;
+          resize: vertical;
+        }
+      }
+
+      .sale-filter {
+        display: flex;
+        gap: 20px;
+
+        .sale-elements {
+          display: flex;
+          gap: 15px;
+
+          .sale-element {
+            display: flex;
+            gap: 3px;
+          }
+        }
+      }
+
+      .price-filter {
+        display: flex;
+        gap: 40px;
+
+        .price-elements {
+          display: flex;
+          gap: 5px;
+        }
+      }
+
+      .tags-filter {
+        display: flex;
+        gap: 42px;
+
+        .tags-elements {
+          display: flex;
+          gap: 20px;
+
+          .tag {
+            display: flex;
+            gap: 5px;
+          }
+        }
+      }
+    }
+
+    .filter-btns {
+      display: flex;
+      gap: 20px;
+      align-self: end;
+    }
+  }
+}
+
+.adCard {
+  cursor: pointer;
+}
+
+@media (min-width: 769px) {
+  .adverts-main-page {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+
+    .ads-filter {
+      position: sticky;
+      top: 154px;
+      width: 30%;
+      height: 100%;
+
+      .filters-div {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+
+        .form-field {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+
+          .name-filter-input {
+            width: 100%;
+          }
+        }
+
+        .sale-filter {
+          .sale-elements {
+            .sale-element {
+              display: flex;
+              align-self: center;
+            }
+          }
+        }
+
+        .price-filter {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+
+          .price-elements {
+            display: flex;
+            flex-direction: column;
+          }
+        }
+
+        .tags-filter {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+
+          .tags-elements {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            .tag {
+              display: flex;
+              gap: 5px;
+            }
+          }
+        }
+      }
+
+      .filter-btns {
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+      }
+    }
+  }
+}

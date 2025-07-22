@@ -1,0 +1,38 @@
+.card {
+  position: relative;
+  border: solid #2c2c2c;
+  border-radius: 20px;
+  border-width: 2px;
+  overflow: hidden;
+
+  .img-container {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    border-bottom: solid #2c2c2c;
+    border-width: 2px;
+  }
+
+  .ad-info {
+    padding: 1rem;
+    max-width: 100%;
+
+    .ad-price {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0;
+      margin-bottom: 0.5em;
+    }
+
+    .ad-name {
+      font-size: 20px;
+      margin: 0;
+      margin-bottom: 0.5em;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .card {
+    height: 100%;
+  }
+}

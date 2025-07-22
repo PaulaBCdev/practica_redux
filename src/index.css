@@ -1,0 +1,68 @@
+:root {
+  --bg-color: #f9f9f9;
+  --main-text-color: #ff4f8b;
+  --text-color: #2c2c2c;
+  --secondary-text-color: #f9f9f9;
+  --main-color: #ff4f8b;
+  --main-color-light: #ff81ab;
+  --secondary-color: #ffe275;
+  --tertiary-color: #00c2a8;
+  --border-color: #2c2c2c;
+  --input-color: rgba(217, 217, 217, 0.3);
+  font-family: "Baloo 2";
+}
+
+.sr-only:not(:focus):not(:active) {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+* {
+  box-sizing: border-box;
+  border-width: 0;
+}
+
+/* html {
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+} */
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: default;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  list-style-type: none;
+}
