@@ -3,7 +3,6 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import FormField from "../../components/ui/form-field";
 import { login } from "./service";
 import { AxiosError } from "axios";
-import { useAuth } from "./context";
 import { useLocation, useNavigate } from "react-router";
 import Page from "../../components/layout/page";
 import Button from "../../components/ui/button";

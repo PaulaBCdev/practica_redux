@@ -1,4 +1,3 @@
-import { useAuth } from "./context";
 import { logout } from "./service";
 
 function LogoutButton() {
