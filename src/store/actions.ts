@@ -1,3 +1,4 @@
+import type { AppThunk } from ".";
 import type { AdvertType } from "../pages/ads/types";
 import { login } from "../pages/auth/service";
 import type { Credentials } from "../pages/auth/types";
@@ -46,8 +47,32 @@ export const authLoginRejected = (error: Error): AuthLoginRejected => ({
   payload: error,
 });
 
+export const authLogin = (
+  credentials: Credentials,
+  isChecked: boolean,
+): AppThunk<Promise<void>> => {
+  return async function (dispatch) {
+    dispatch(authLoginPending());
+    try {
+      await login(credentials, isChecked);
+      dispatch(authLoginFulfilled());
+    } catch (error) {
+      if (error instanceof Error) {
+        dispatch(authLoginRejected(error));
+      }
+      throw error;
+    }
+  };
+};
+
+export const authLogout = (): AuthLogout => ({
+  type: "auth/logout",
+});
+
 export type Actions =
   | AuthLoginPending
   | AuthLoginFulfilled
   | AuthLoginRejected
-  | AuthLogout;
+  | AuthLogout
+  | AdsLoadedFulfilled
+  | AdCreatedFulfilled;

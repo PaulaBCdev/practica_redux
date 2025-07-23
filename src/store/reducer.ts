@@ -25,4 +25,14 @@ export function auth(
   }
 }
 
-export function ads() {}
+export function ads(state = defautlState.ads, action: Actions): State["ads"] {
+  switch (action.type) {
+    case "ads/loaded/fulfilled":
+      return action.payload;
+    case "ads/created/fulfilled":
+      return [action.payload, ...(state ?? [])];
+
+    default:
+      return state;
+  }
+}

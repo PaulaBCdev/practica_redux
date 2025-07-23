@@ -6,11 +6,13 @@ import { AxiosError } from "axios";
 import { useLocation, useNavigate } from "react-router";
 import Page from "../../components/layout/page";
 import Button from "../../components/ui/button";
+import { useLoginAction } from "../../store/hooks";
 
 function LoginPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { onLogin } = useAuth();
+  const loginAction = useLoginAction();
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -36,8 +38,7 @@ function LoginPage() {
     event.preventDefault();
 
     try {
-      await login(credentials, isChecked);
-      onLogin();
+      await loginAction(credentials, isChecked);
 
       const to = location.state?.from ?? "/";
       navigate(to, { replace: true });
