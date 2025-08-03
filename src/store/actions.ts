@@ -1,6 +1,5 @@
 import type { AppThunk } from ".";
 import type { AdvertType } from "../pages/ads/types";
-import { login } from "../pages/auth/service";
 import type { Credentials } from "../pages/auth/types";
 
 // ACTION TYPES
@@ -51,11 +50,14 @@ export const authLogin = (
   credentials: Credentials,
   isChecked: boolean,
 ): AppThunk<Promise<void>> => {
-  return async function (dispatch) {
+  return async function (dispatch, _getState, { api, router }) {
     dispatch(authLoginPending());
     try {
-      await login(credentials, isChecked);
+      await api.auth.login(credentials, isChecked);
       dispatch(authLoginFulfilled());
+      //Navigation
+      const to = router.state.location.state?.from ?? "/";
+      router.navigate(to, { replace: true });
     } catch (error) {
       if (error instanceof Error) {
         dispatch(authLoginRejected(error));
@@ -65,9 +67,12 @@ export const authLogin = (
   };
 };
 
-export const authLogout = (): AuthLogout => ({
-  type: "auth/logout",
-});
+export const authLogout = (): AppThunk<Promise<void>> => {
+  return async function (dispatch, _getState, { api }) {
+    await api.auth.logout();
+    dispatch({ type: "auth/logout" });
+  };
+};
 
 export type Actions =
   | AuthLoginPending

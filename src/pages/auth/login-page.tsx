@@ -1,17 +1,12 @@
 import "./login-page.css";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import FormField from "../../components/ui/form-field";
-import { login } from "./service";
 import { AxiosError } from "axios";
-import { useLocation, useNavigate } from "react-router";
 import Page from "../../components/layout/page";
 import Button from "../../components/ui/button";
 import { useLoginAction } from "../../store/hooks";
 
 function LoginPage() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { onLogin } = useAuth();
   const loginAction = useLoginAction();
   const [credentials, setCredentials] = useState({
     email: "",
@@ -34,14 +29,12 @@ function LoginPage() {
     setIsChecked(event.target.checked);
   }
 
+  // TODO: middleware de control de errores
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     try {
       await loginAction(credentials, isChecked);
-
-      const to = location.state?.from ?? "/";
-      navigate(to, { replace: true });
     } catch (error) {
       if (error instanceof AxiosError) {
         setError({
