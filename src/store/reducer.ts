@@ -3,16 +3,22 @@ import type { Actions } from "./actions";
 
 export type State = {
   auth: boolean;
-  ads: AdvertType[] | null;
+  ads: {
+    loaded: boolean;
+    data: AdvertType[];
+  };
 };
 
-const defautlState: State = {
+const defaultState: State = {
   auth: false,
-  ads: null,
+  ads: {
+    loaded: false,
+    data: [],
+  },
 };
 
 export function auth(
-  state = defautlState.auth,
+  state = defaultState.auth,
   action: Actions,
 ): State["auth"] {
   switch (action.type) {
@@ -25,12 +31,19 @@ export function auth(
   }
 }
 
-export function ads(state = defautlState.ads, action: Actions): State["ads"] {
+export function ads(state = defaultState.ads, action: Actions): State["ads"] {
   switch (action.type) {
     case "ads/loaded/fulfilled":
-      return action.payload;
+      return { loaded: true, data: action.payload };
+    case "ads/detail/fulfilled":
+      return { loaded: false, data: [action.payload] };
+    case "ads/delete":
+      return {
+        ...state,
+        data: state.data.filter((ad) => ad.id !== action.payload),
+      };
     case "ads/created/fulfilled":
-      return [action.payload, ...(state ?? [])];
+      return { ...state, data: [action.payload, ...state.data] };
 
     default:
       return state;

@@ -2,37 +2,29 @@ import "./ad-page.css";
 import { useNavigate, useParams } from "react-router";
 import Page from "../../components/layout/page";
 import { useEffect, useState } from "react";
-import type { AdvertType } from "./types";
-import { deleteAdvert, getAdvert } from "./service";
-import { AxiosError } from "axios";
 import Photo from "../../components/ui/photo";
 import TagsList from "../../components/ui/tags-list";
 import TrashButton from "../../components/ui/trash-button";
 import ConfirmDelete from "../../components/ui/confirm-delete";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { getAdDetail } from "../../store/selectors";
+import { adDelete, adsDetail } from "../../store/actions";
 
 function AdvertPage() {
   const params = useParams();
-  const [ad, setAd] = useState<AdvertType | null>(null);
+  const ad = useAppSelector(getAdDetail(params.id));
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
   const adType = ad?.sale ? "sell" : "buy";
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!params.id) {
       navigate("/NotFoundPage", { replace: true });
       return;
     }
-
-    getAdvert(params.id)
-      .then((ad) => setAd(ad))
-      .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.status === 404) {
-            navigate("/NotFoundPage", { replace: true });
-          }
-        }
-      });
-  }, [params.id]);
+    dispatch(adsDetail(params.id));
+  }, [params.id, dispatch]);
 
   const handleShowConfirm = () => {
     setShowConfirm(true);
@@ -40,8 +32,7 @@ function AdvertPage() {
 
   const handleDeleteAd = async () => {
     if (ad) {
-      await deleteAdvert(ad.id);
-      navigate("/", { replace: true });
+      dispatch(adDelete(ad.id));
     }
   };
 
