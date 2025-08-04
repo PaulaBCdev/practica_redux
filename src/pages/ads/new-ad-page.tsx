@@ -8,10 +8,9 @@ import {
 } from "react";
 import Page from "../../components/layout/page";
 import FormField from "../../components/ui/form-field";
-import { createAdvert, getTags } from "./service";
+import { getTags } from "./service";
 import Button from "../../components/ui/button";
-import { useNavigate } from "react-router";
-import { AxiosError } from "axios";
+import { useAdCreate } from "../../store/hooks";
 
 const NewAdvertPage = () => {
   const [nameInput, setNameInput] = useState("");
@@ -26,7 +25,8 @@ const NewAdvertPage = () => {
     !priceInput ||
     !selectedTypeInput ||
     !selectedTagsInput.length;
-  const navigate = useNavigate();
+
+  const createAd = useAdCreate();
 
   useEffect(() => {
     const getAllTags = async () => {
@@ -73,17 +73,7 @@ const NewAdvertPage = () => {
       adToUpload.append("photo", file);
     }
 
-    try {
-      const createdAd = await createAdvert(adToUpload);
-      console.log("aqui llega");
-      navigate(`/adverts/${createdAd.id}`, { replace: true });
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.status === 401) {
-          navigate("/login", { replace: true });
-        }
-      }
-    }
+    await createAd(adToUpload);
   };
 
   return (

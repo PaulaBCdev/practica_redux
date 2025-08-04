@@ -56,9 +56,18 @@ type AdsDelete = {
   payload: string;
 };
 
-type AdCreatedFulfilled = {
+type AdsCreatedPending = {
+  type: "ads/created/pending";
+};
+
+type AdsCreatedFulfilled = {
   type: "ads/created/fulfilled";
   payload: AdvertType;
+};
+
+type AdsCreatedRejected = {
+  type: "ads/created/rejected";
+  payload: Error;
 };
 
 // AUTH ACTIONS
@@ -188,6 +197,41 @@ export function adDelete(adId: string): AppThunk<Promise<void>> {
   };
 }
 
+export const adsCreatedPending = (): AdsCreatedPending => ({
+  type: "ads/created/pending",
+});
+
+export const adsCreatedFulfilled = (ad: AdvertType): AdsCreatedFulfilled => ({
+  type: "ads/created/fulfilled",
+  payload: ad,
+});
+
+export const adsCreatedRejected = (error: Error): AdsCreatedRejected => ({
+  type: "ads/created/rejected",
+  payload: error,
+});
+
+export function adCreate(adContent: FormData): AppThunk<Promise<AdvertType>> {
+  return async function (dispatch, _getStatus, { api, router }) {
+    try {
+      dispatch(adsCreatedPending());
+
+      const createdAd = await api.ads.createAdvert(adContent);
+      dispatch(adsCreatedFulfilled(createdAd));
+      router.navigate(`/adverts/${createdAd.id}`, { replace: true });
+      return createdAd;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        dispatch(adsCreatedRejected(error));
+        if (error.status === 401) {
+          router.navigate("/login", { replace: true });
+        }
+      }
+      throw error;
+    }
+  };
+}
+
 export type Actions =
   | AuthLoginPending
   | AuthLoginFulfilled
@@ -200,4 +244,6 @@ export type Actions =
   | AdsDetailFulfilled
   | AdsDetailRejected
   | AdsDelete
-  | AdCreatedFulfilled;
+  | AdsCreatedPending
+  | AdsCreatedFulfilled
+  | AdsCreatedRejected;

@@ -7,3 +7,5 @@ export function getAdDetail(adId?: string) {
     return state.ads.data.find((ad) => ad.id === adId);
   };
 }
+
+// NOTA: habria que hacer un getTags y se usa en la pagina principal!! y en la de creacion de un anuncio!!

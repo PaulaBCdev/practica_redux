@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector } from ".";
+import type { AdvertType } from "../pages/ads/types";
 import type { Credentials } from "../pages/auth/types";
-import { authLogin, authLogout } from "./actions";
+import { adCreate, authLogin, authLogout } from "./actions";
 import { getIsLogged } from "./selectors";
 
 export function useAuth() {
@@ -18,5 +19,12 @@ export function useLogoutAction() {
   const dispatch = useAppDispatch();
   return function () {
     return dispatch(authLogout());
+  };
+}
+
+export function useAdCreate() {
+  const dispatch = useAppDispatch();
+  return async function (adContent: FormData): Promise<AdvertType> {
+    return await dispatch(adCreate(adContent));
   };
 }
