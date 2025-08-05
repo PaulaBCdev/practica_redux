@@ -1,8 +1,9 @@
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from ".";
 import type { AdvertType } from "../pages/ads/types";
 import type { Credentials } from "../pages/auth/types";
-import { adCreate, authLogin, authLogout } from "./actions";
-import { getIsLogged } from "./selectors";
+import { adCreate, authLogin, authLogout, fetchTags } from "./actions";
+import { areTagsLoaded, getIsLogged, getTags } from "./selectors";
 
 export function useAuth() {
   return useAppSelector(getIsLogged);
@@ -27,4 +28,18 @@ export function useAdCreate() {
   return async function (adContent: FormData): Promise<AdvertType> {
     return await dispatch(adCreate(adContent));
   };
+}
+
+export function useFetchTags() {
+  const dispatch = useAppDispatch();
+  const tags = useAppSelector(getTags);
+  const loaded = useAppSelector(areTagsLoaded);
+
+  useEffect(() => {
+    if (!loaded) {
+      dispatch(fetchTags());
+    }
+  }, [loaded, dispatch]);
+
+  return tags;
 }

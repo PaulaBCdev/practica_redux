@@ -7,6 +7,11 @@ export type State = {
     loaded: boolean;
     data: AdvertType[];
   };
+  tags: {
+    loaded: boolean;
+    data: string[];
+    error?: Error | null;
+  };
 };
 
 const defaultState: State = {
@@ -14,6 +19,11 @@ const defaultState: State = {
   ads: {
     loaded: false,
     data: [],
+  },
+  tags: {
+    loaded: false,
+    data: [],
+    error: null,
   },
 };
 
@@ -45,6 +55,22 @@ export function ads(state = defaultState.ads, action: Actions): State["ads"] {
     case "ads/created/fulfilled":
       return { ...state, data: [action.payload, ...state.data] };
 
+    default:
+      return state;
+  }
+}
+
+export function tags(
+  state = defaultState.tags,
+  action: Actions,
+): State["tags"] {
+  switch (action.type) {
+    case "tags/pending":
+      return { ...state, loaded: false, error: null };
+    case "tags/fulfilled":
+      return { ...state, loaded: true, data: action.payload };
+    case "tags/rejected":
+      return { ...state, loaded: false, error: action.payload };
     default:
       return state;
   }

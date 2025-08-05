@@ -1,22 +1,15 @@
 import "./new-ad-page.css";
-import {
-  useEffect,
-  useRef,
-  useState,
-  type ChangeEvent,
-  type FormEvent,
-} from "react";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import Page from "../../components/layout/page";
 import FormField from "../../components/ui/form-field";
-import { getTags } from "./service";
 import Button from "../../components/ui/button";
-import { useAdCreate } from "../../store/hooks";
+import { useAdCreate, useFetchTags } from "../../store/hooks";
 
 const NewAdvertPage = () => {
   const [nameInput, setNameInput] = useState("");
   const [priceInput, setPriceInput] = useState<number | "">("");
   const [selectedTypeInput, setSelectedTypeInput] = useState("");
-  const [tags, setTags] = useState([]);
+  /* const [tags, setTags] = useState([]); */
   const [selectedTagsInput, setSelectedTagsInput] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -27,14 +20,7 @@ const NewAdvertPage = () => {
     !selectedTagsInput.length;
 
   const createAd = useAdCreate();
-
-  useEffect(() => {
-    const getAllTags = async () => {
-      const tags = await getTags();
-      setTags(tags);
-    };
-    getAllTags();
-  }, []);
+  const tags = useFetchTags();
 
   const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     setNameInput(event.target.value);

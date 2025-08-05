@@ -70,6 +70,20 @@ type AdsCreatedRejected = {
   payload: Error;
 };
 
+type GetTagsPending = {
+  type: "tags/pending";
+};
+
+type GetTagsFulfilled = {
+  type: "tags/fulfilled";
+  payload: string[];
+};
+
+type GetTagsRejected = {
+  type: "tags/rejected";
+  payload: Error;
+};
+
 // AUTH ACTIONS
 
 export const authLoginPending = (): AuthLoginPending => ({
@@ -212,7 +226,7 @@ export const adsCreatedRejected = (error: Error): AdsCreatedRejected => ({
 });
 
 export function adCreate(adContent: FormData): AppThunk<Promise<AdvertType>> {
-  return async function (dispatch, _getStatus, { api, router }) {
+  return async function (dispatch, _getState, { api, router }) {
     try {
       dispatch(adsCreatedPending());
 
@@ -226,6 +240,35 @@ export function adCreate(adContent: FormData): AppThunk<Promise<AdvertType>> {
         if (error.status === 401) {
           router.navigate("/login", { replace: true });
         }
+      }
+      throw error;
+    }
+  };
+}
+
+export const getTagsPending = (): GetTagsPending => ({ type: "tags/pending" });
+
+export const getTagsFulfilled = (tags: string[]): GetTagsFulfilled => ({
+  type: "tags/fulfilled",
+  payload: tags,
+});
+
+export const getTagsRejected = (error: Error): GetTagsRejected => ({
+  type: "tags/rejected",
+  payload: error,
+});
+
+export function fetchTags(): AppThunk<Promise<string[]>> {
+  return async function (dispatch, _getState, { api }) {
+    try {
+      dispatch(getTagsPending());
+
+      const tags = await api.ads.getTags();
+      dispatch(getTagsFulfilled(tags));
+      return tags;
+    } catch (error) {
+      if (error instanceof Error) {
+        dispatch(getTagsRejected(error));
       }
       throw error;
     }
@@ -246,4 +289,7 @@ export type Actions =
   | AdsDelete
   | AdsCreatedPending
   | AdsCreatedFulfilled
-  | AdsCreatedRejected;
+  | AdsCreatedRejected
+  | GetTagsPending
+  | GetTagsFulfilled
+  | GetTagsRejected;

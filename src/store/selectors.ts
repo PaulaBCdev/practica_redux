@@ -8,4 +8,7 @@ export function getAdDetail(adId?: string) {
   };
 }
 
-// NOTA: habria que hacer un getTags y se usa en la pagina principal!! y en la de creacion de un anuncio!!
+// NOTA:  getTags y se usa en la pagina principal!! y en la de creacion de un anuncio!!
+export const getTags = (state: RootState) => state.tags.data;
+
+export const areTagsLoaded = (state: RootState) => state.tags.loaded;
