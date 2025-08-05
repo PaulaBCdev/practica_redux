@@ -19,6 +19,6 @@ export interface UploadAdvertType {
 export interface FiltersType {
   name?: string;
   sale?: boolean;
-  price?: number[];
+  price?: [number, number];
   tags?: string[];
 }

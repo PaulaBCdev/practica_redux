@@ -1,10 +1,18 @@
 import "./ads-page.css";
 import { lazy, useEffect, useState, type ChangeEvent } from "react";
 import type { FiltersType, AdvertType } from "./types";
-import { getLatestAdverts, getTags } from "./service";
 import Page from "../../components/layout/page";
 import Button from "../../components/ui/button";
 import FormField from "../../components/ui/form-field";
+import { useAppSelector } from "../../store";
+import {
+  getFilters,
+  getFiltersName,
+  getFiltersPrice,
+  getFiltersSale,
+  getFiltersTags,
+} from "../../store/selectors";
+import { useFetchTags } from "../../store/hooks";
 
 const AdsList = lazy(() => import("./ads-list"));
 
@@ -32,7 +40,7 @@ function AdvertsPage() {
 
   //FILTERS STATES
 
-  const [appliedFilters, setAppliedFilters] = useState<FiltersType>({});
+  /* const [appliedFilters, setAppliedFilters] = useState<FiltersType>({});
 
   const [nameInput, setNameInput] = useState("");
 
@@ -42,7 +50,14 @@ function AdvertsPage() {
   const [maxPrice, setMaxPrice] = useState("5000");
 
   const [tags, setTags] = useState([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]); */
+
+  const appliedFilters = useAppSelector(getFilters);
+  const appliedFilterName = useAppSelector(getFiltersName);
+  const appliedFilterPrice = useAppSelector(getFiltersPrice);
+  const appliedFilterSale = useAppSelector(getFiltersSale);
+  const appliedFilterTags = useAppSelector(getFiltersTags);
+  const tags = useFetchTags();
 
   useEffect(() => {
     async function getAds() {
@@ -56,7 +71,7 @@ function AdvertsPage() {
         if (ad.price > maxPrice) {
           maxPrice = ad.price;
         }
-      });
+      }); // setea el price filter para que, por defecto, aparezca con el precio mas alto de entre todos los ads
       setPriceInput(maxPrice.toString());
       setMaxPrice(maxPrice.toString());
 
@@ -115,7 +130,7 @@ function AdvertsPage() {
     setAppliedFilters({});
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
     const applyFilters = () => {
       const filteredAds = ads.filter((ad) => {
         const nameMatches = !!appliedFilters.name
@@ -140,7 +155,35 @@ function AdvertsPage() {
       setShowingAds(filteredAds);
     };
     applyFilters();
-  }, [appliedFilters]);
+  }, [appliedFilters]); */
+
+  useEffect(() => {
+    const filteredAds = ads.filter((ad) => {
+      const nameMatches = appliedFilterName
+        ? ad.name.toLowerCase().startsWith(appliedFilterName.toLowerCase())
+        : true;
+
+      const priceMatches = appliedFilterPrice
+        ? appliedFilterPrice[0] <= ad.price && ad.price <= appliedFilterPrice[1]
+        : true;
+
+      const salesMatches =
+        appliedFilterSale !== null ? ad.sale === appliedFilterSale : true;
+
+      let tagsMatches = true;
+      if (appliedFilterTags.length) {
+        appliedFilterTags.forEach((tag) => {
+          if (!ad.tags.includes(tag)) tagsMatches = false;
+        });
+      }
+    });
+  }, [
+    ads,
+    appliedFilterName,
+    appliedFilterPrice,
+    appliedFilterSale,
+    appliedFilterTags,
+  ]);
 
   const isFiltering =
     appliedFilters.name !== undefined ||

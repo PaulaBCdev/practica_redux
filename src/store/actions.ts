@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import type { AppThunk } from ".";
-import type { AdvertType } from "../pages/ads/types";
+import type { AdvertType, FiltersType } from "../pages/ads/types";
 import type { Credentials } from "../pages/auth/types";
 import { getAdDetail } from "./selectors";
 
@@ -82,6 +82,15 @@ type GetTagsFulfilled = {
 type GetTagsRejected = {
   type: "tags/rejected";
   payload: Error;
+};
+
+type FiltersApplied = {
+  type: "filters/applied";
+  payload: FiltersType;
+};
+
+type FiltersReset = {
+  type: "filters/reset";
 };
 
 // AUTH ACTIONS
@@ -259,7 +268,12 @@ export const getTagsRejected = (error: Error): GetTagsRejected => ({
 });
 
 export function fetchTags(): AppThunk<Promise<string[]>> {
-  return async function (dispatch, _getState, { api }) {
+  return async function (dispatch, getState, { api }) {
+    const state = getState();
+    if (state.tags.loaded) {
+      return;
+    }
+
     try {
       dispatch(getTagsPending());
 
@@ -274,6 +288,15 @@ export function fetchTags(): AppThunk<Promise<string[]>> {
     }
   };
 }
+
+export const filtersApplied = (filters: FiltersType): FiltersApplied => ({
+  type: "filters/applied",
+  payload: filters,
+});
+
+export const filtersReset = (): FiltersReset => ({
+  type: "filters/reset",
+});
 
 export type Actions =
   | AuthLoginPending
@@ -292,4 +315,6 @@ export type Actions =
   | AdsCreatedRejected
   | GetTagsPending
   | GetTagsFulfilled
-  | GetTagsRejected;
+  | GetTagsRejected
+  | FiltersApplied
+  | FiltersReset;

@@ -2,8 +2,14 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from ".";
 import type { AdvertType } from "../pages/ads/types";
 import type { Credentials } from "../pages/auth/types";
-import { adCreate, authLogin, authLogout, fetchTags } from "./actions";
-import { areTagsLoaded, getIsLogged, getTags } from "./selectors";
+import {
+  adCreate,
+  adsLoaded,
+  authLogin,
+  authLogout,
+  fetchTags,
+} from "./actions";
+import { getIsLogged, getLatestAds, getTags } from "./selectors";
 
 export function useAuth() {
   return useAppSelector(getIsLogged);
@@ -23,6 +29,15 @@ export function useLogoutAction() {
   };
 }
 
+export function useGetAds() {
+  const dispatch = useAppDispatch();
+  const ads = useAppSelector(getLatestAds);
+
+  useEffect(() => {
+    dispatch(adsLoaded());
+  }, []);
+}
+
 export function useAdCreate() {
   const dispatch = useAppDispatch();
   return async function (adContent: FormData): Promise<AdvertType> {
@@ -33,13 +48,10 @@ export function useAdCreate() {
 export function useFetchTags() {
   const dispatch = useAppDispatch();
   const tags = useAppSelector(getTags);
-  const loaded = useAppSelector(areTagsLoaded);
 
   useEffect(() => {
-    if (!loaded) {
-      dispatch(fetchTags());
-    }
-  }, [loaded, dispatch]);
+    dispatch(fetchTags());
+  }, [dispatch]);
 
   return tags;
 }

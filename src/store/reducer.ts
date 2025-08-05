@@ -12,6 +12,12 @@ export type State = {
     data: string[];
     error?: Error | null;
   };
+  filters: {
+    name: string;
+    sale: boolean | null;
+    price: [number, number] | null;
+    tags: string[];
+  };
 };
 
 const defaultState: State = {
@@ -24,6 +30,12 @@ const defaultState: State = {
     loaded: false,
     data: [],
     error: null,
+  },
+  filters: {
+    name: "",
+    sale: null,
+    price: null,
+    tags: [],
   },
 };
 
@@ -71,6 +83,20 @@ export function tags(
       return { ...state, loaded: true, data: action.payload };
     case "tags/rejected":
       return { ...state, loaded: false, error: action.payload };
+    default:
+      return state;
+  }
+}
+
+export function filters(
+  state = defaultState.filters,
+  action: Actions,
+): State["filters"] {
+  switch (action.type) {
+    case "filters/applied":
+      return { ...state, ...action.payload };
+    case "filters/reset":
+      return defaultState.filters;
     default:
       return state;
   }
