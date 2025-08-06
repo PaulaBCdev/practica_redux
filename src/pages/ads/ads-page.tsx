@@ -1,18 +1,12 @@
 import "./ads-page.css";
-import { lazy, useEffect, useState, type ChangeEvent } from "react";
-import type { FiltersType, AdvertType } from "./types";
+import { lazy, type ChangeEvent } from "react";
 import Page from "../../components/layout/page";
 import Button from "../../components/ui/button";
 import FormField from "../../components/ui/form-field";
-import { useAppSelector } from "../../store";
-import {
-  getFilters,
-  getFiltersName,
-  getFiltersPrice,
-  getFiltersSale,
-  getFiltersTags,
-} from "../../store/selectors";
-import { useFetchTags } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { getFilters, getMaxPrice } from "../../store/selectors";
+import { useAdsLoaded, useFetchTags, useFilters } from "../../store/hooks";
+import { filtersApplied } from "../../store/actions";
 
 const AdsList = lazy(() => import("./ads-list"));
 
@@ -35,161 +29,53 @@ function EmptyList({ areFilters }: Props) {
 }
 
 function AdvertsPage() {
-  const [ads, setAds] = useState<AdvertType[]>([]);
-  const [showingAds, setShowingAds] = useState<AdvertType[]>([]);
+  const dispatch = useAppDispatch();
 
-  //FILTERS STATES
+  const filters = useAppSelector(getFilters); // current filter state
+  const tags = useFetchTags(); // tags fetched from DB
 
-  /* const [appliedFilters, setAppliedFilters] = useState<FiltersType>({});
+  // Load ads
+  useAdsLoaded();
 
-  const [nameInput, setNameInput] = useState("");
+  const { applyFilters, resetFilters } = useFilters();
+  const filteredAds = applyFilters(); // return filtered ads
 
-  const [selectedSaleInput, setSelectedSaleInput] = useState("");
-
-  const [priceInput, setPriceInput] = useState("0");
-  const [maxPrice, setMaxPrice] = useState("5000");
-
-  const [tags, setTags] = useState([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]); */
-
-  const appliedFilters = useAppSelector(getFilters);
-  const appliedFilterName = useAppSelector(getFiltersName);
-  const appliedFilterPrice = useAppSelector(getFiltersPrice);
-  const appliedFilterSale = useAppSelector(getFiltersSale);
-  const appliedFilterTags = useAppSelector(getFiltersTags);
-  const tags = useFetchTags();
-
-  useEffect(() => {
-    async function getAds() {
-      const ads = await getLatestAdverts();
-      setAds(ads);
-      setShowingAds(ads);
-
-      //price filter
-      let maxPrice = 0;
-      ads.forEach((ad) => {
-        if (ad.price > maxPrice) {
-          maxPrice = ad.price;
-        }
-      }); // setea el price filter para que, por defecto, aparezca con el precio mas alto de entre todos los ads
-      setPriceInput(maxPrice.toString());
-      setMaxPrice(maxPrice.toString());
-
-      //tags filter
-      const tags = await getTags();
-      setTags(tags);
-    }
-    getAds();
-  }, []);
+  const maxPrice = useAppSelector(getMaxPrice);
 
   const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
-    setNameInput(event.target.value);
+    dispatch(filtersApplied({ ...filters, name: event.target.value }));
   };
 
   const handleChangeSale = (event: ChangeEvent<HTMLInputElement>) => {
-    setSelectedSaleInput(event.target.value);
+    const value = event.target.value === "sell";
+    dispatch(filtersApplied({ ...filters, sale: value }));
   };
 
   const handleChangePrice = (event: ChangeEvent<HTMLInputElement>) => {
-    setPriceInput(event.target.value);
+    const maxValue = parseInt(event.target.value);
+    dispatch(filtersApplied({ ...filters, price: [0, maxValue] }));
   };
 
   function handleCheckTags(event: ChangeEvent<HTMLInputElement>) {
+    let newSelected = [...filters.tags];
     if (event.target.checked) {
-      setSelectedTags([...selectedTags, event.target.value]);
+      newSelected.push(event.target.value);
     } else {
-      const newSelected = [...selectedTags].filter(
-        (tag) => tag !== event.target.value,
-      );
-      setSelectedTags(newSelected);
+      newSelected = newSelected.filter((tag) => tag !== event.target.value);
     }
+
+    dispatch(filtersApplied({ ...filters, tags: newSelected }));
   }
 
-  const handleApplyFilters = () => {
-    const newFilters: FiltersType = {};
-    if (nameInput) {
-      newFilters.name = nameInput;
-    }
-    if (selectedSaleInput) {
-      if (selectedSaleInput === "sell") {
-        newFilters.sale = true;
-      } else {
-        newFilters.sale = false;
-      }
-    }
-    if (priceInput) {
-      newFilters.price = [0, parseInt(priceInput)];
-    }
-    if (selectedTags) {
-      newFilters.tags = selectedTags;
-    }
-    setAppliedFilters(newFilters);
-  };
-
   const handleDeleteFilters = () => {
-    setAppliedFilters({});
+    resetFilters();
   };
-
-  /* useEffect(() => {
-    const applyFilters = () => {
-      const filteredAds = ads.filter((ad) => {
-        const nameMatches = !!appliedFilters.name
-          ? ad.name.toLowerCase().startsWith(appliedFilters.name.toLowerCase())
-          : true;
-        const priceMatches = !!appliedFilters.price
-          ? appliedFilters.price[0] <= ad.price &&
-            ad.price <= appliedFilters.price[1]
-          : true;
-        const saleMatches =
-          appliedFilters.sale !== undefined
-            ? ad.sale === appliedFilters.sale
-            : true;
-        let tagsMatches = true;
-        !!appliedFilters.tags?.length &&
-          appliedFilters.tags.forEach((tag) => {
-            if (!ad.tags.includes(tag)) tagsMatches = false;
-          });
-
-        return nameMatches && priceMatches && saleMatches && tagsMatches;
-      });
-      setShowingAds(filteredAds);
-    };
-    applyFilters();
-  }, [appliedFilters]); */
-
-  useEffect(() => {
-    const filteredAds = ads.filter((ad) => {
-      const nameMatches = appliedFilterName
-        ? ad.name.toLowerCase().startsWith(appliedFilterName.toLowerCase())
-        : true;
-
-      const priceMatches = appliedFilterPrice
-        ? appliedFilterPrice[0] <= ad.price && ad.price <= appliedFilterPrice[1]
-        : true;
-
-      const salesMatches =
-        appliedFilterSale !== null ? ad.sale === appliedFilterSale : true;
-
-      let tagsMatches = true;
-      if (appliedFilterTags.length) {
-        appliedFilterTags.forEach((tag) => {
-          if (!ad.tags.includes(tag)) tagsMatches = false;
-        });
-      }
-    });
-  }, [
-    ads,
-    appliedFilterName,
-    appliedFilterPrice,
-    appliedFilterSale,
-    appliedFilterTags,
-  ]);
 
   const isFiltering =
-    appliedFilters.name !== undefined ||
-    appliedFilters.price !== undefined ||
-    appliedFilters.sale !== undefined ||
-    appliedFilters.tags !== undefined;
+    filters.name !== "" ||
+    filters.price !== null ||
+    filters.sale !== null ||
+    filters.tags.length > 0;
 
   return (
     <Page title="">
@@ -203,7 +89,7 @@ function AdvertsPage() {
               classNameInput="name-filter-input"
               type="text"
               name="name"
-              value={nameInput}
+              value={filters.name || ""}
               onChange={handleChangeName}
             />
 
@@ -216,7 +102,7 @@ function AdvertsPage() {
                     id="sell"
                     name="sale"
                     value="sell"
-                    checked={selectedSaleInput === "sell"}
+                    checked={filters.sale === true}
                     onChange={handleChangeSale}
                   />
                   <label htmlFor="sell">Sell</label>
@@ -228,7 +114,7 @@ function AdvertsPage() {
                     id="buy"
                     name="sale"
                     value="buy"
-                    checked={selectedSaleInput === "buy"}
+                    checked={filters.sale === false}
                     onChange={handleChangeSale}
                   />
                   <label htmlFor="buy">Buy</label>
@@ -242,14 +128,14 @@ function AdvertsPage() {
                 <input
                   type="range"
                   min="0"
-                  max={maxPrice}
-                  value={priceInput}
+                  max={maxPrice?.toString()}
+                  value={filters.price?.[1] || 0}
                   className="slider"
                   id="price-slider"
                   onChange={handleChangePrice}
                 />
                 <label className="show-price" htmlFor="price-slider">
-                  Price range: 0 - {priceInput}
+                  Price range: 0 - {filters.price?.[1] || 0}
                 </label>
               </div>
             </div>
@@ -265,7 +151,7 @@ function AdvertsPage() {
                         name={tag}
                         id={tag}
                         value={tag}
-                        checked={selectedTags.includes(tag)}
+                        checked={filters.tags.includes(tag)}
                         onChange={handleCheckTags}
                       />
                       <label htmlFor={tag}>{tag}</label>
@@ -276,9 +162,6 @@ function AdvertsPage() {
             </div>
           </div>
           <div className="filter-btns">
-            <Button className="apply-filters-btn" onClick={handleApplyFilters}>
-              APPLY FILTERS
-            </Button>
             <Button
               className="delete-filters-btn"
               onClick={handleDeleteFilters}
@@ -288,10 +171,10 @@ function AdvertsPage() {
           </div>
         </section>
         <section className="ads-page">
-          {!showingAds.length ? (
+          {!filteredAds.length ? (
             <EmptyList areFilters={isFiltering} />
           ) : (
-            <AdsList list={showingAds} />
+            <AdsList list={filteredAds} />
           )}
         </section>
       </div>
@@ -300,3 +183,7 @@ function AdvertsPage() {
 }
 
 export default AdvertsPage;
+
+/*  <Button className="apply-filters-btn" onClick={handleApplyFilters}>
+              APPLY FILTERS
+            </Button> */

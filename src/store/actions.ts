@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import type { AppThunk } from ".";
-import type { AdvertType, FiltersType } from "../pages/ads/types";
+import type { AdvertType, UIFiltersType } from "../pages/ads/types";
 import type { Credentials } from "../pages/auth/types";
 import { getAdDetail } from "./selectors";
 
@@ -86,11 +86,16 @@ type GetTagsRejected = {
 
 type FiltersApplied = {
   type: "filters/applied";
-  payload: FiltersType;
+  payload: UIFiltersType;
 };
 
 type FiltersReset = {
   type: "filters/reset";
+};
+
+type PriceRangeSet = {
+  type: "filters/priceRangeSet";
+  payload: number;
 };
 
 // AUTH ACTIONS
@@ -163,7 +168,17 @@ export function adsLoaded(): AppThunk<Promise<void>> {
       dispatch(adsLoadedPending());
 
       const ads = await api.ads.getLatestAdverts();
+
+      //price filter default setting
+      let maxPrice = 0;
+      ads.forEach((ad) => {
+        if (ad.price > maxPrice) {
+          maxPrice = ad.price;
+        }
+      });
+
       dispatch(adsLoadedFulfilled(ads));
+      dispatch(filtersApplied({ price: [0, maxPrice], maxPrice }));
     } catch (error) {
       if (error instanceof Error) {
         dispatch(adsLoadedRejected(error));
@@ -289,7 +304,7 @@ export function fetchTags(): AppThunk<Promise<string[]>> {
   };
 }
 
-export const filtersApplied = (filters: FiltersType): FiltersApplied => ({
+export const filtersApplied = (filters: UIFiltersType): FiltersApplied => ({
   type: "filters/applied",
   payload: filters,
 });
@@ -317,4 +332,5 @@ export type Actions =
   | GetTagsFulfilled
   | GetTagsRejected
   | FiltersApplied
-  | FiltersReset;
+  | FiltersReset
+  | PriceRangeSet;

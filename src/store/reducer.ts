@@ -17,6 +17,7 @@ export type State = {
     sale: boolean | null;
     price: [number, number] | null;
     tags: string[];
+    maxPrice: number | null;
   };
 };
 
@@ -36,6 +37,7 @@ const defaultState: State = {
     sale: null,
     price: null,
     tags: [],
+    maxPrice: 0,
   },
 };
 

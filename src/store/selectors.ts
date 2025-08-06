@@ -4,6 +4,8 @@ export const getIsLogged = (state: RootState) => state.auth;
 
 export const getLatestAds = (state: RootState) => state.ads.data;
 
+export const getMaxPrice = (state: RootState) => state.filters.maxPrice;
+
 export function getAdDetail(adId?: string) {
   return function (state: RootState) {
     return state.ads.data.find((ad) => ad.id === adId);

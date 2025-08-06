@@ -18,7 +18,11 @@ export interface UploadAdvertType {
 
 export interface FiltersType {
   name?: string;
-  sale?: boolean;
-  price?: [number, number];
+  sale?: boolean | null;
+  price?: [number, number] | null;
   tags?: string[];
 }
+
+export type UIFiltersType = FiltersType & {
+  maxPrice: number | null;
+};
