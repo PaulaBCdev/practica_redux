@@ -16,7 +16,6 @@ function LoginPage() {
     password: "",
   });
   const [isChecked, setIsChecked] = useState(false);
-  /* const [error, setError] = useState<{ message: string } | null>(null); */
 
   const { email, password } = credentials;
   const isDisabled = !email || !password || isFetching;

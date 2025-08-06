@@ -16,7 +16,7 @@ if (accessToken) {
 
 const router = createBrowserRouter([{ path: "*", element: <App /> }]);
 
-const store = configureStore({ auth: !!localStorage }, router);
+const store = configureStore({ auth: !!accessToken }, router);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
