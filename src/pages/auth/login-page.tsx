@@ -1,22 +1,25 @@
 import "./login-page.css";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import FormField from "../../components/ui/form-field";
-import { AxiosError } from "axios";
 import Page from "../../components/layout/page";
 import Button from "../../components/ui/button";
-import { useLoginAction } from "../../store/hooks";
+import { useLoginAction, useUiResetError } from "../../store/hooks";
+import { useAppSelector } from "../../store";
+import { getUi } from "../../store/selectors";
 
 function LoginPage() {
   const loginAction = useLoginAction();
+  const uiResetErrorAction = useUiResetError();
+  const { pending: isFetching, error } = useAppSelector(getUi);
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
   const [isChecked, setIsChecked] = useState(false);
-  const [error, setError] = useState<{ message: string } | null>(null);
+  /* const [error, setError] = useState<{ message: string } | null>(null); */
 
   const { email, password } = credentials;
-  const isDisabled = !email || !password;
+  const isDisabled = !email || !password || isFetching;
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     setCredentials((prevCredentials) => ({
@@ -33,15 +36,7 @@ function LoginPage() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    try {
-      await loginAction(credentials, isChecked);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setError({
-          message: error.response?.data?.message ?? error.message ?? "",
-        });
-      }
-    }
+    await loginAction(credentials, isChecked);
   }
 
   return (
@@ -85,7 +80,7 @@ function LoginPage() {
             className="login-error"
             role="alert"
             onClick={() => {
-              setError(null);
+              uiResetErrorAction();
             }}
           >
             {error.message}

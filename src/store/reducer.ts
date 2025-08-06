@@ -1,5 +1,10 @@
 import type { AdvertType } from "../pages/ads/types";
-import type { Actions } from "./actions";
+import type {
+  Actions,
+  ActionsFulfilled,
+  ActionsPending,
+  ActionsRejected,
+} from "./actions";
 
 export type State = {
   auth: boolean;
@@ -18,6 +23,10 @@ export type State = {
     price: [number, number] | null;
     tags: string[];
     maxPrice: number | null;
+  };
+  ui: {
+    pending: boolean;
+    error: Error | null;
   };
 };
 
@@ -38,6 +47,10 @@ const defaultState: State = {
     price: null,
     tags: [],
     maxPrice: 0,
+  },
+  ui: {
+    pending: false,
+    error: null,
   },
 };
 
@@ -102,4 +115,36 @@ export function filters(
     default:
       return state;
   }
+}
+
+function isPending(action: Actions): action is ActionsPending {
+  return action.type.endsWith("/pending");
+}
+
+function isFulfilled(action: Actions): action is ActionsFulfilled {
+  return action.type.endsWith("/fulfilled");
+}
+
+function isRejected(action: Actions): action is ActionsRejected {
+  return action.type.endsWith("/rejected");
+}
+
+export function ui(state = defaultState.ui, action: Actions): State["ui"] {
+  if (isPending(action)) {
+    return { pending: true, error: null };
+  }
+
+  if (isFulfilled(action)) {
+    return { pending: false, error: null };
+  }
+
+  if (isRejected(action)) {
+    return { pending: false, error: action.payload };
+  }
+
+  if (action.type === "ui/reset-error") {
+    return { ...state, error: null };
+  }
+
+  return state;
 }

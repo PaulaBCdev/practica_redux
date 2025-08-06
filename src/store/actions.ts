@@ -98,6 +98,10 @@ type PriceRangeSet = {
   payload: number;
 };
 
+type UIResetError = {
+  type: "ui/reset-error";
+};
+
 // AUTH ACTIONS
 
 export const authLoginPending = (): AuthLoginPending => ({
@@ -313,6 +317,10 @@ export const filtersReset = (): FiltersReset => ({
   type: "filters/reset",
 });
 
+export const uiResetError = (): UIResetError => ({
+  type: "ui/reset-error",
+});
+
 export type Actions =
   | AuthLoginPending
   | AuthLoginFulfilled
@@ -333,4 +341,26 @@ export type Actions =
   | GetTagsRejected
   | FiltersApplied
   | FiltersReset
-  | PriceRangeSet;
+  | PriceRangeSet
+  | UIResetError;
+
+export type ActionsPending =
+  | AuthLoginPending
+  | AdsLoadedPending
+  | AdsDetailPending
+  | AdsCreatedPending
+  | GetTagsPending;
+
+export type ActionsFulfilled =
+  | AuthLoginFulfilled
+  | AdsLoadedFulfilled
+  | AdsDetailFulfilled
+  | AdsCreatedFulfilled
+  | GetTagsFulfilled;
+
+export type ActionsRejected =
+  | AuthLoginRejected
+  | AdsLoadedRejected
+  | AdsDetailRejected
+  | AdsCreatedRejected
+  | GetTagsRejected;

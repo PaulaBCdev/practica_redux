@@ -12,11 +12,8 @@ export function getAdDetail(adId?: string) {
   };
 }
 
-// NOTA:  getTags y se usa en la pagina principal!! y en la de creacion de un anuncio!!
 export const getTags = (state: RootState) => state.tags.data;
 
 export const getFilters = (state: RootState) => state.filters;
-export const getFiltersName = (state: RootState) => state.filters.name;
-export const getFiltersPrice = (state: RootState) => state.filters.price;
-export const getFiltersSale = (state: RootState) => state.filters.sale;
-export const getFiltersTags = (state: RootState) => state.filters.tags;
+
+export const getUi = (state: RootState) => state.ui;

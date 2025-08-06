@@ -9,6 +9,7 @@ import {
   authLogout,
   fetchTags,
   filtersReset,
+  uiResetError,
 } from "./actions";
 import { getFilters, getIsLogged, getLatestAds, getTags } from "./selectors";
 
@@ -94,4 +95,11 @@ export function useFilters() {
   };
 
   return { applyFilters, resetFilters };
+}
+
+export function useUiResetError() {
+  const dispatch = useAppDispatch();
+  return function () {
+    return dispatch(uiResetError());
+  };
 }
