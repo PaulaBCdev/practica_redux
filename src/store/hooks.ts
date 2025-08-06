@@ -100,6 +100,6 @@ export function useFilters() {
 export function useUiResetError() {
   const dispatch = useAppDispatch();
   return function () {
-    return dispatch(uiResetError);
+    return dispatch(uiResetError());
   };
 }
