@@ -15,10 +15,14 @@ function FormField({
 }: FormFieldProps) {
   return (
     <div className="form-field">
-      <label className={clsx("form-field-label", classNameLabel)}>
+      <label
+        htmlFor={label}
+        className={clsx("form-field-label", classNameLabel)}
+      >
         {label}
       </label>
       <input
+        id={label}
         className={clsx("form-field-input", classNameInput)}
         autoComplete="off"
         {...props}

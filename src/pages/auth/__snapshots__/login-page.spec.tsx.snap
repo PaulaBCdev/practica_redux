@@ -21,12 +21,14 @@ exports[`LoginPage > should render 1`] = `
         >
           <label
             class="form-field-label login-label"
+            for="Email"
           >
             Email
           </label>
           <input
             autocomplete="off"
             class="form-field-input login-input"
+            id="Email"
             name="email"
             type="email"
             value=""
@@ -37,12 +39,14 @@ exports[`LoginPage > should render 1`] = `
         >
           <label
             class="form-field-label login-label"
+            for="Password"
           >
             Password
           </label>
           <input
             autocomplete="off"
             class="form-field-input login-input"
+            id="Password"
             name="password"
             type="password"
             value=""
@@ -68,6 +72,89 @@ exports[`LoginPage > should render 1`] = `
           </label>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`LoginPage > should render error 1`] = `
+<div>
+  <div
+    class="layout-page"
+  >
+    <h2
+      class="layout-title"
+    >
+      Login
+    </h2>
+    <div
+      class="login-page"
+    >
+      <form
+        class="login-form"
+      >
+        <div
+          class="form-field"
+        >
+          <label
+            class="form-field-label login-label"
+            for="Email"
+          >
+            Email
+          </label>
+          <input
+            autocomplete="off"
+            class="form-field-input login-input"
+            id="Email"
+            name="email"
+            type="email"
+            value=""
+          />
+        </div>
+        <div
+          class="form-field"
+        >
+          <label
+            class="form-field-label login-label"
+            for="Password"
+          >
+            Password
+          </label>
+          <input
+            autocomplete="off"
+            class="form-field-input login-input"
+            id="Password"
+            name="password"
+            type="password"
+            value=""
+          />
+        </div>
+        <button
+          class="sc-bXdtCk vVNLT login-btn"
+          disabled=""
+          type="submit"
+        >
+          Login
+        </button>
+        <div
+          class="remember-me-check"
+        >
+          <input
+            id="rememberMe"
+            name="rememberMe"
+            type="checkbox"
+          />
+          <label>
+            Remember me
+          </label>
+        </div>
+      </form>
+      <div
+        class="login-error"
+        role="alert"
+      >
+        Wrong email/password
+      </div>
     </div>
   </div>
 </div>

@@ -31,7 +31,6 @@ function LoginPage() {
     setIsChecked(event.target.checked);
   }
 
-  // TODO: middleware de control de errores
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
