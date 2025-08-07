@@ -7,7 +7,7 @@ describe("auth reducer", () => {
   });
 
   test('should manage "auth/logout" action', () => {
-    const result = auth(undefined, { type: "auth/logout" });
+    const result = auth(true, { type: "auth/logout" });
     expect(result).toBe(false);
   });
 
