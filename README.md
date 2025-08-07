@@ -1,20 +1,43 @@
-# 🛒 Nodepop (ZOCO) - Proyecto de React
+# 🛒 Nodepop (ZOCO) - Proyecto con React y Redux
 
-Este es mi proyecto final para el módulo de **Fundamentos de React**. Se trata de una **aplicación web de compra venta de productos** desde la que se puede gestionar el backend de anuncios de compra y venta llamado [Nodepop](https://github.com/davidjj76/nodepop-api).
+Este es un proyecto desarrollado como parte de los módulos de **Fundamentos de React** y **React Avanzado**. Se trata de una **aplicación web de compra y venta de productos**, conectada con un backend llamado [Nodepop](https://github.com/davidjj76/nodepop-api), que permite gestionar anuncios de forma eficiente.
 
 ---
 
 ## 📌 Objetivo del proyecto
 
-Crear una **SPA (Single Page Application)** con React para gestionar anuncios de productos a través de un backend ya creado, con funcionalidades de login, listado de productos, creación, visualización y borrado de anuncios.
+Crear una **SPA (Single Page Application)** con React que permita a los usuarios autenticados gestionar anuncios de productos: ver, crear, filtrar, eliminar y explorar detalles. Además, en la segunda fase del proyecto, se ha integrado **Redux** para la gestión del estado global y se han incorporado **tests unitarios** para asegurar el correcto funcionamiento de la lógica de negocio.
 
-La app permite hacer filtros de búsqueda, y protege las rutas privadas para que solo puedan acceder usuarios autenticados.
+---
+
+## 🧠 Nuevas funcionalidades en React Avanzado
+
+Durante el módulo de React Avanzado, se introdujeron mejoras clave al proyecto:
+
+### 🗂️ Redux
+
+- Se implementó un **estado global con Redux** para desacoplar la lógica de los componentes y mejorar la escalabilidad de la app.
+- Se definieron **acciones** y **reducers** para manejar el estado de autenticación, anuncios y filtros de forma centralizada.
+- Se usaron **selectores** para acceder al estado de forma eficiente y reutilizable.
+- Se creó una **colección de hooks** para encapsular la lógica de interacción con el store.
+
+### 🧪 Testing con Vitest
+
+- Se añadieron **tests unitarios** para:
+  - Reducers (asegurando la actualización correcta del estado).
+  - Acciones (verificando la lógica que se dispara).
+  - Selectores (probando que extraen los datos esperados).
+  - Componentes clave (con mocks cuando fue necesario).
+- Se utilizó **Vitest** como entorno de pruebas por su velocidad y compatibilidad con Vite.
+- En algunos casos, se **mockearon funciones o módulos completos** para aislar la lógica a testear.
 
 ---
 
 ## Tecnologías utilizadas
 
 - **React** (con Vite)
+- **Typescript** para manejar los tipos
+- **Redux** para conectar el store con los componentes
 - **CSS** puro y **Styled Components** para los estilos
 - **Axios** para llamadas HTTP
 - **React Router** para el enrutado
@@ -27,52 +50,66 @@ La app permite hacer filtros de búsqueda, y protege las rutas privadas para que
 
 ### Rutas públicas
 
-- `/login`: Página de login donde se pide el email y la contraseña. Tiene un checkbox para "Recordar sesión" y así no tener que volver a loguearse cada vez.
+- `/login`: Página de login con opción de "Recordar sesión" (persistencia en `localStorage`).
 
-### Rutas protegidas (solo si estás logueado)
+### Rutas protegidas (requieren login)
 
-- `/`: Redirecciona automáticamente a `/adverts`
-- `/adverts`: Página principal donde se listan los anuncios. Aquí se pueden aplicar filtros.
-- `/adverts/:id`: Página de detalle de un anuncio concreto.
-- `/adverts/new`: Página para crear un nuevo anuncio.
-- `*`: Cualquier ruta no existente lleva a una página de error 404.
+- `/`: Redirecciona a `/adverts`
+- `/adverts`: Listado de anuncios con filtros aplicables.
+- `/adverts/:id`: Detalle del anuncio.
+- `/adverts/new`: Crear un nuevo anuncio.
+- `*`: Página de error 404 para rutas no válidas.
 
 ---
 
-## Qué hace cada página
+## Descripción de páginas principales
 
 ### LoginPage
 
-- Formulario para hacer login.
-- Si marcamos "Recordar sesión", se guarda en el `localStorage`.
+- Formulario de login con persistencia de sesión.
+- Uso de Redux para manejar el estado de autenticación.
 
 ### AdvertsPage
 
-- Lista de todos los anuncios con info básica: nombre, precio, tipo (compra/venta), y tags.
-- Tiene una zona de **filtros**, que permite buscar por:
+- Lista de anuncios con filtros:
   - Nombre
-  - Tipo (compra o venta)
+  - Tipo (compra/venta)
   - Rango de precios
   - Tags
-- Cada anuncio tiene un enlace a su detalle.
+- Estado gestionado con Redux.
 - Si no hay anuncios, se muestra un mensaje con enlace para crear uno.
 
 ### AdvertPage
 
-- Muestra el detalle completo de un anuncio.
-- Incluye la imagen (o un placeholder si no tiene).
-- Se puede **borrar** el anuncio con confirmación personalizada (no se usa `window.confirm`).
-- Al borrar, redirige al listado de anuncios.
+- Detalle de un anuncio con opción de borrado (con confirmación personalizada).
+- Redux actualiza el estado tras eliminar el anuncio.
 
 ### NewAdvertPage
 
-- Formulario para crear un anuncio con los siguientes campos:
-  - Nombre (requerido)
-  - Tipo (compra o venta) (requerido)
-  - Precio (requerido)
-  - Tags (requerido)
-  - Imagen (opcional)
-- Las validaciones están hechas con React.
-- Al crear el anuncio, se redirige automáticamente a su página de detalle.
+- Formulario para crear un nuevo anuncio con validaciones.
+- Al enviar, redirige automáticamente a la vista de detalle.
+- Usa Redux para manejar el estado de anuncios.
 
 ---
+
+## ✅ Tests realizados
+
+- Reducers:
+  - Comprobación de estados iniciales y mutaciones esperadas.
+- Acciones:
+  - Verificación de la lógica de negocio y peticiones asíncronas (cuando aplica).
+- Selectores:
+  - Extraen datos filtrados o transformados desde el store.
+- Componentes:
+  - Se testean en aislamiento usando **React Testing Library**.
+  - Uso de **mocks** para evitar dependencias externas.
+
+---
+
+## 📦 Cómo ejecutar el proyecto
+
+1. Clona este repositorio.
+2. Instala dependencias:
+   ```bash
+   npm install
+   ```
